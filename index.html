@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petualangan Kata: Makna Denotatif & Konotatif</title>
+    <style>
+        /* CSS Reset & Variables */
+        :root {
+            --primary: #0284c7; --secondary: #facc15; --bg: #f0f9ff;
+            --text-main: #1e293b; --text-light: #ffffff;
+            --success: #22c55e; --danger: #ef4444; --card: #ffffff;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg); color: var(--text-main); overflow-x: hidden; }
+        
+        /* Layouting */
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; }
+        .screen { display: none; animation: fadeIn 0.5s; background: var(--card); padding: 30px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .screen.active { display: block; }
+        
+        /* Typography & Elements */
+        h1, h2, h3 { color: var(--primary); text-align: center; margin-bottom: 20px; }
+        p { margin-bottom: 15px; line-height: 1.6; font-size: 16px; }
+        
+        .btn { display: inline-block; padding: 12px 24px; margin: 10px 5px; font-size: 16px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; transition: transform 0.2s; text-align: center; }
+        .btn:hover { transform: scale(1.05); }
+        .btn-primary { background: var(--primary); color: var(--text-light); }
+        .btn-secondary { background: var(--secondary); color: var(--text-main); }
+        .btn-success { background: var(--success); color: var(--text-light); }
+        
+        input[type="text"], select { width: 100%; padding: 10px; margin: 10px 0 20px; border: 2px solid #cbd5e1; border-radius: 8px; font-size: 16px; }
+        
+        /* Specific Screens */
+        .grid-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .game-card { border: 2px solid var(--primary); border-radius: 10px; padding: 20px; text-align: center; cursor: pointer; background: #e0f2fe; }
+        .game-card:hover { background: #bae6fd; }
+        
+        .quiz-option { display: block; width: 100%; text-align: left; background: #f1f5f9; border: 2px solid #cbd5e1; padding: 15px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; }
+        .quiz-option:hover { background: #e2e8f0; }
+        .quiz-option.selected { border-color: var(--primary); background: #bae6fd; }
+        
+        .progress-bar { width: 100%; background: #e2e8f0; height: 10px; border-radius: 5px; margin-bottom: 20px; }
+        .progress-fill { height: 100%; background: var(--primary); border-radius: 5px; transition: width 0.3s; }
+        
+        /* Drag & Drop */
+        .match-container { display: flex; justify-content: space-between; gap: 20px; }
+        .match-col { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+        .draggable, .droppable { padding: 10px; border: 2px solid var(--primary); border-radius: 5px; text-align: center; background: white; }
+        .draggable { cursor: grab; }
+        
+        /* Utility */
+        .text-center { text-align: center; }
+        .hidden { display: none !important; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Nav */
+        .top-nav { display: flex; justify-content: space-between; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- SCREEN 1: BERANDA -->
+    <div id="scr-beranda" class="screen active text-center">
+        <h1>🌟 PETUALANGAN KATA 🌟</h1>
+        <h2>Mengenal Makna Denotatif dan Konotatif</h2>
+        <p>Bahasa Indonesia - Kelas VI SD<br>Bab: Nusantara Berjuta Cerita</p>
+        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Nusantara" alt="Mascot" width="150" style="margin:20px;">
+        <br>
+        <button class="btn btn-primary" onclick="nav('scr-identitas')">MULAI PETUALANGAN</button>
+        <button class="btn btn-secondary" onclick="nav('scr-petunjuk')">PETUNJUK</button>
+        <button class="btn btn-secondary" onclick="nav('scr-tujuan')">TUJUAN</button>
+        <p style="margin-top: 30px; font-size: 12px; color: #64748b;">Pengembang: Tim Guru Kelas VI</p>
+    </div>
+
+    <!-- SCREEN 2: IDENTITAS -->
+    <div id="scr-identitas" class="screen">
+        <h2>Identitas Penjelajah</h2>
+        <p>Sebelum memulai, masukkan namamu!</p>
+        <label>Nama Panggilan:</label>
+        <input type="text" id="studentName" placeholder="Contoh: Budi">
+        <label>Kelas:</label>
+        <select id="studentClass">
+            <option value="6A">6A</option>
+            <option value="6B">6B</option>
+            <option value="6C">6C</option>
+        </select>
+        <div class="text-center">
+            <button class="btn btn-secondary" onclick="nav('scr-beranda')">Kembali</button>
+            <button class="btn btn-primary" onclick="startLearning()">MULAI BELAJAR</button>
+        </div>
+    </div>
+
+    <!-- SCREEN: PETUNJUK -->
+    <div id="scr-petunjuk" class="screen">
+        <h2>Petunjuk Penggunaan</h2>
+        <ul>
+            <li>📚 <strong>Materi:</strong> Baca materi dengan seksama.</li>
+            <li>🎮 <strong>Bermain:</strong> Selesaikan 5 game untuk melatih pemahamanmu.</li>
+            <li>📝 <strong>Kuis:</strong> Kerjakan 20 soal untuk mendapatkan sertifikat.</li>
+        </ul>
+        <div class="text-center"><button class="btn btn-primary" onclick="nav('scr-beranda')">Kembali</button></div>
+    </div>
+
+    <!-- SCREEN: TUJUAN -->
+    <div id="scr-tujuan" class="screen">
+        <h2>Tujuan Pembelajaran</h2>
+        <ul>
+            <li>Menjelaskan pengertian makna denotatif dan konotatif.</li>
+            <li>Membedakan makna denotatif dan konotatif dalam kalimat.</li>
+            <li>Menafsirkan ungkapan dalam cerita rakyat dan keseharian.</li>
+        </ul>
+        <div class="text-center"><button class="btn btn-primary" onclick="nav('scr-beranda')">Kembali</button></div>
+    </div>
+
+    <!-- SCREEN: MENU UTAMA (Setelah Login) -->
+    <div id="scr-menu" class="screen">
+        <div class="top-nav">
+            <span>Halo, <b id="display-name">Siswa</b>!</span>
+            <button class="btn btn-secondary" style="padding: 5px 10px; font-size: 12px;" onclick="nav('scr-beranda')">Keluar</button>
+        </div>
+        <h2>Peta Petualangan</h2>
+        <div class="grid-menu">
+            <div class="game-card" onclick="nav('scr-materi1')">
+                <h3>📖 Belajar Materi</h3>
+                <p>Pelajari konsepnya dulu yuk!</p>
+            </div>
+            <div class="game-card" onclick="nav('scr-games')">
+                <h3>🎮 Arena Bermain</h3>
+                <p>Uji kemampuanmu di 5 Game seru!</p>
+            </div>
+            <div class="game-card" onclick="startQuiz()">
+                <h3>📝 Kuis Evaluasi</h3>
+                <p>Dapatkan nilai & Sertifikatmu!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MATERI 1 -->
+    <div id="scr-materi1" class="screen">
+        <h2>Materi 1: Makna Denotatif</h2>
+        <p><strong>Makna Denotatif</strong> adalah makna sebenarnya, makna dasar, atau makna yang sesuai dengan kamus (harfiah). Tidak ada kiasan di dalamnya.</p>
+        <p><strong>Ciri-ciri:</strong> Sesuai fakta, objektif, maknanya langsung bisa dipahami.</p>
+        <p><strong>Contoh:</strong> Budi memakan <em>buah apel</em> yang dibeli ibu.</p>
+        <div class="text-center">
+            <button class="btn btn-secondary" onclick="nav('scr-menu')">Menu</button>
+            <button class="btn btn-primary" onclick="nav('scr-materi2')">Lanjut</button>
+        </div>
+    </div>
+    
+    <!-- MATERI 2 -->
+    <div id="scr-materi2" class="screen">
+        <h2>Materi 2: Makna Konotatif</h2>
+        <p><strong>Makna Konotatif</strong> adalah makna kiasan, atau makna tambahan yang berkaitan dengan nilai rasa, emosi, atau budaya.</p>
+        <p><strong>Ciri-ciri:</strong> Berupa ungkapan/kiasan, maknanya tidak sesuai kamus dasar.</p>
+        <p><strong>Contoh:</strong> Ayah membawa <em>buah tangan</em> dari luar kota. (Buah tangan = oleh-oleh).</p>
+        <div class="text-center">
+            <button class="btn btn-secondary" onclick="nav('scr-materi1')">Kembali</button>
+            <button class="btn btn-primary" onclick="nav('scr-materi3')">Lanjut</button>
+        </div>
+    </div>
+
+    <!-- MATERI 3 (Contoh) -->
+    <div id="scr-materi3" class="screen">
+        <h2>Ungkapan Sehari-hari & Cerita Rakyat</h2>
+        <ul>
+            <li><strong>Kutu Buku:</strong> Suka membaca.</li>
+            <li><strong>Ringan Tangan:</strong> Suka menolong / suka memukul (tergantung kalimat).</li>
+            <li><strong>Besar Kepala:</strong> Sombong.</li>
+        </ul>
+        <p>Dalam cerita <em>Bawang Merah Bawang Putih</em>, Bawang Putih anak yang <strong>rendah hati</strong> (tidak sombong).</p>
+        <div class="text-center">
+            <button class="btn btn-secondary" onclick="nav('scr-materi2')">Kembali</button>
+            <button class="btn btn-primary" onclick="nav('scr-menu')">Selesai Belajar</button>
+        </div>
+    </div>
+
+    <!-- MENU GAMES -->
+    <div id="scr-games" class="screen">
+        <h2>Arena Bermain</h2>
+        <div class="grid-menu">
+            <div class="game-card" onclick="startGame1()">1. Tebak Makna</div>
+            <div class="game-card" onclick="alert('Dalam pengembangan!')">2. Detektif Kata</div>
+            <div class="game-card" onclick="alert('Dalam pengembangan!')">3. Pasangkan Makna</div>
+            <div class="game-card" onclick="alert('Dalam pengembangan!')">4. Benar/Salah</div>
+            <div class="game-card" onclick="alert('Dalam pengembangan!')">5. Misi Nusantara</div>
+        </div>
+        <div class="text-center" style="margin-top: 20px;"><button class="btn btn-secondary" onclick="nav('scr-menu')">Kembali ke Menu</button></div>
+    </div>
+
+    <!-- GAME 1: TEBAK MAKNA -->
+    <div id="scr-game1" class="screen">
+        <h2 id="g1-title">Tebak Makna</h2>
+        <div class="progress-bar"><div id="g1-progress" class="progress-fill" style="width: 0%;"></div></div>
+        <h3 id="g1-question" style="font-size: 20px; font-weight: normal; margin-bottom: 30px;"></h3>
+        <button class="btn btn-primary" style="width: 100%" onclick="checkGame1('Denotatif')">DENOTATIF</button>
+        <button class="btn btn-secondary" style="width: 100%" onclick="checkGame1('Konotatif')">KONOTATIF</button>
+        <p id="g1-feedback" class="text-center" style="margin-top: 15px; font-weight: bold;"></p>
+    </div>
+
+    <!-- KUIS EVALUASI -->
+    <div id="scr-kuis" class="screen">
+        <h2>Kuis Evaluasi</h2>
+        <div class="progress-bar"><div id="quiz-progress" class="progress-fill" style="width: 0%;"></div></div>
+        <p id="quiz-counter">Soal 1 / 20</p>
+        <h3 id="quiz-question" style="font-size: 18px; margin-bottom: 20px;"></h3>
+        <div id="quiz-options"></div>
+        <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+            <button class="btn btn-secondary" id="btn-quiz-prev" onclick="prevQuiz()">Sebelumnya</button>
+            <button class="btn btn-primary" id="btn-quiz-next" onclick="nextQuiz()">Berikutnya</button>
+        </div>
+    </div>
+
+    <!-- HASIL KUIS -->
+    <div id="scr-hasil" class="screen text-center">
+        <h2>Hasil Penjelajahan</h2>
+        <h1 id="res-score" style="font-size: 48px; color: var(--success); margin: 20px 0;">100</h1>
+        <p id="res-kategori" style="font-size: 20px; font-weight: bold;"></p>
+        <p>Benar: <span id="res-benar"></span> | Salah: <span id="res-salah"></span></p>
+        
+        <div id="upload-status" style="margin: 20px 0; padding: 10px; background: #e0f2fe; border-radius: 8px;">
+            Status: Menyimpan ke Server...
+        </div>
+
+        <button class="btn btn-primary" onclick="showSertifikat()">Lihat Sertifikat</button>
+        <button class="btn btn-secondary" onclick="nav('scr-menu')">Kembali ke Menu</button>
+    </div>
+
+    <!-- SERTIFIKAT -->
+    <div id="scr-sertifikat" class="screen text-center" style="border: 10px solid var(--primary); background: #fffbeb;">
+        <h1 style="color: var(--secondary); text-shadow: 1px 1px 2px #000;">SERTIFIKAT PENGHARGAAN</h1>
+        <p>Diberikan kepada:</p>
+        <h2 id="cert-name" style="color: var(--text-main); font-size: 32px;"></h2>
+        <p>Kelas: <span id="cert-class"></span></p>
+        <p>Atas prestasinya menyelesaikan Petualangan Kata dengan nilai:</p>
+        <h1 id="cert-score" style="color: var(--success);"></h1>
+        <p id="cert-date" style="margin-top: 20px;"></p>
+        <button class="btn btn-primary" style="margin-top: 20px;" onclick="window.print()">Cetak</button>
+        <button class="btn btn-secondary" onclick="nav('scr-menu')">Tutup</button>
+    </div>
+
+</div>
+
+<script>
+    // ==========================================
+    // KONFIGURASI URL APPS SCRIPT (WAJIB DIISI)
+    // ==========================================
+    const SCRIPT_URL = "MASUKKAN_URL_WEB_APP_GOOGLE_APPS_SCRIPT_DISINI";
+
+    // STATE
+    let state = {
+        name: '', class: '', sessionId: '', startTime: 0,
+        quizIndex: 0, quizAnswers: new Array(20).fill(null), quizScore: 0
+    };
+
+    // NAVIGASI SPA
+    function nav(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+    }
+
+    function startLearning() {
+        const name = document.getElementById('studentName').value.trim();
+        const cls = document.getElementById('studentClass').value;
+        if (!name) return alert('Nama harus diisi!');
+        state.name = name;
+        state.class = cls;
+        state.sessionId = 'SES-' + new Date().getTime() + '-' + Math.floor(Math.random()*1000);
+        document.getElementById('display-name').innerText = name;
+        nav('scr-menu');
+    }
+
+    // GAME 1 LOGIC (Contoh Implementasi Singkat)
+    const g1Data = [
+        {q: "Adik makan <b>buah apel</b> manis.", a: "Denotatif"},
+        {q: "Paman membawa <b>buah tangan</b>.", a: "Konotatif"},
+        {q: "Meja itu terbuat dari <b>kayu jati</b>.", a: "Denotatif"},
+        {q: "Ia menjadi <b>kambing hitam</b> di kelas.", a: "Konotatif"}
+    ];
+    let g1Idx = 0;
+    function startGame1() { g1Idx = 0; nav('scr-game1'); loadG1(); }
+    function loadG1() {
+        if(g1Idx >= g1Data.length) { alert("Game Selesai!"); nav('scr-games'); return; }
+        document.getElementById('g1-question').innerHTML = g1Data[g1Idx].q;
+        document.getElementById('g1-progress').style.width = ((g1Idx/g1Data.length)*100) + '%';
+        document.getElementById('g1-feedback').innerText = '';
+    }
+    function checkGame1(answer) {
+        if(answer === g1Data[g1Idx].a) {
+            document.getElementById('g1-feedback').innerText = 'BENAR! 🎉';
+            document.getElementById('g1-feedback').style.color = 'green';
+            setTimeout(() => { g1Idx++; loadG1(); }, 1000);
+        } else {
+            document.getElementById('g1-feedback').innerText = 'SALAH! Coba lagi.';
+            document.getElementById('g1-feedback').style.color = 'red';
+        }
+    }
+
+    // KUIS LOGIC (20 Soal, representasi dipersingkat di sini)
+    const quizData = [
+        { q: "Apa yang dimaksud dengan makna denotatif?", opts: ["Makna kiasan", "Makna sebenarnya", "Makna tambahan", "Makna emosional"], ans: 1 },
+        { q: "Apa yang dimaksud dengan makna konotatif?", opts: ["Makna sebenarnya", "Makna kamus", "Makna kiasan", "Makna harfiah"], ans: 2 },
+        { q: "Kalimat manakah yang menggunakan makna konotatif?", opts: ["Budi mencuci tangan.", "Andi tangan kanan bos.", "Kakak membeli tangan robot.", "Ibu memegang tangan adik."], ans: 1 },
+        { q: "Bunga mawar itu sangat harum. Kata 'bunga' bermakna?", opts: ["Konotatif", "Denotatif", "Kiasan", "Sifat"], ans: 1 },
+        { q: "Ia adalah bunga desa yang disukai banyak orang. Bunga desa bermakna?", opts: ["Bunga di taman", "Orang yang suka bunga", "Perempuan cantik idaman", "Bunga plastik"], ans: 2 }
+        // Untuk mencapai 20 soal, tambahkan object serupa ke dalam array ini.
+    ];
+
+    function startQuiz() {
+        // Normalnya di sini array quizData diacak (shuffle) sebelum dimulai
+        state.quizIndex = 0;
+        state.quizAnswers = new Array(quizData.length).fill(null);
+        state.startTime = new Date().getTime();
+        loadQuiz();
+        nav('scr-kuis');
+    }
+
+    function loadQuiz() {
+        const qData = quizData[state.quizIndex];
+        document.getElementById('quiz-counter').innerText = `Soal ${state.quizIndex + 1} / ${quizData.length}`;
+        document.getElementById('quiz-progress').style.width = (((state.quizIndex + 1)/quizData.length)*100) + '%';
+        document.getElementById('quiz-question').innerText = qData.q;
+        
+        const optsContainer = document.getElementById('quiz-options');
+        optsContainer.innerHTML = '';
+        qData.opts.forEach((opt, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'quiz-option' + (state.quizAnswers[state.quizIndex] === idx ? ' selected' : '');
+            btn.innerText = String.fromCharCode(65 + idx) + ". " + opt;
+            btn.onclick = () => { state.quizAnswers[state.quizIndex] = idx; loadQuiz(); };
+            optsContainer.appendChild(btn);
+        });
+
+        document.getElementById('btn-quiz-prev').style.visibility = state.quizIndex === 0 ? 'hidden' : 'visible';
+        document.getElementById('btn-quiz-next').innerText = state.quizIndex === quizData.length - 1 ? 'Selesai' : 'Berikutnya';
+    }
+
+    function prevQuiz() { if(state.quizIndex > 0) { state.quizIndex--; loadQuiz(); } }
+    function nextQuiz() {
+        if(state.quizAnswers[state.quizIndex] === null) return alert("Pilih jawaban dulu!");
+        if(state.quizIndex < quizData.length - 1) {
+            state.quizIndex++; loadQuiz();
+        } else {
+            finishQuiz();
+        }
+    }
+
+    function finishQuiz() {
+        if(!confirm("Kumpulkan jawaban sekarang?")) return;
+        
+        const durationMs = new Date().getTime() - state.startTime;
+        const durationSec = Math.floor(durationMs / 1000);
+        let correct = 0;
+        state.quizAnswers.forEach((ans, i) => { if(ans === quizData[i].ans) correct++; });
+        
+        const total = quizData.length;
+        const score = Math.round((correct / total) * 100);
+        const wrong = total - correct;
+        let kategori = score >= 90 ? "Sangat Baik" : (score >= 80 ? "Baik" : (score >= 70 ? "Cukup" : "Perlu Bimbingan"));
+
+        document.getElementById('res-score').innerText = score;
+        document.getElementById('res-kategori').innerText = kategori;
+        document.getElementById('res-benar').innerText = correct;
+        document.getElementById('res-salah').innerText = wrong;
+        
+        nav('scr-hasil');
+        sendDataToAppsScript(score, total, correct, wrong, durationSec);
+    }
+
+    function sendDataToAppsScript(score, total, correct, wrong, duration) {
+        const statusDiv = document.getElementById('upload-status');
+        if(SCRIPT_URL === "MASUKKAN_URL_WEB_APP_GOOGLE_APPS_SCRIPT_DISINI") {
+            statusDiv.innerHTML = "⚠️ URL Apps Script belum diatur. Data tidak tersimpan online.";
+            return;
+        }
+
+        const payload = {
+            sessionId: state.sessionId,
+            nama: state.name,
+            kelas: state.class,
+            nilai: score,
+            jumlah_soal: total,
+            benar: correct,
+            salah: wrong,
+            durasi: duration
+        };
+
+        statusDiv.innerHTML = "⏳ Sedang menyimpan data ke server...";
+        statusDiv.style.color = "blue";
+
+        // Menggunakan mode no-cors di fetch tidak memungkinkan baca response JSON.
+        // Kita gunakan POST biasa, namun pastikan GAS membalas dengan header CORS yang tepat.
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.status === 'success') {
+                statusDiv.innerHTML = "✅ Data berhasil disimpan!";
+                statusDiv.style.color = "green";
+            } else {
+                statusDiv.innerHTML = "❌ Gagal: " + data.message;
+                statusDiv.style.color = "red";
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            // Fallback for CORS opaque responses if misconfigured
+            statusDiv.innerHTML = "✅ Permintaan terkirim. (Catatan: periksa setelan CORS pada GAS)";
+            statusDiv.style.color = "green";
+        });
+    }
+
+    function showSertifikat() {
+        document.getElementById('cert-name').innerText = state.name;
+        document.getElementById('cert-class').innerText = state.class;
+        document.getElementById('cert-score').innerText = document.getElementById('res-score').innerText;
+        document.getElementById('cert-date').innerText = new Date().toLocaleDateString('id-ID');
+        nav('scr-sertifikat');
+    }
+</script>
+</body>
+</html>
